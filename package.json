@@ -11,5 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "eslint": "^3.13.0"
+  },
+  "dependencies": {
+    "twitter": "^1.7.0"
   }
 }
