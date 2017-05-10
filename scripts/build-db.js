@@ -1,10 +1,13 @@
+/* global process */
 const redis = require('redis');
 const BeautifulWords = require('../base-data/beautiful-words.json');
 const UglyWords = require('../base-data/most-common-words.json');
 
 // create a redius client
-// const client = require('redis').createClient(process.env.REDIS_URL);
-const client = redis.createClient();
+const client = process.env.NODE_ENV === 'LOCAL' ?
+  redis.createClient() :
+  redis.createClient(process.env.REDIS_URL);
+
 const multi = client.multi();
 // if an error occurs, print it to the console
 client.on('error', err => console.log(`Error ${err}`));

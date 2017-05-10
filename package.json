@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node scripts/bot.js",
+    "start-local": "NODE_ENV=LOCAL node scripts/bot.js",
     "build-db": "node scripts/build-db.js",
     "post-install": "npm run build-db"
   },

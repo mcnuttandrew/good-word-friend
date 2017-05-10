@@ -4,18 +4,18 @@ const TwitterHelpers = require('./twitter-helpers');
 const bayes = require('bayes');
 
 /* global process */
-const secret = {
-  consumer_key: process.env.TWITTER_CONSUMER_KEY,
-  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-  access_token_key: process.env.TWITTER_ACCESS_KEY,
-  access_token_secret: process.env.TWITTER_ACCESS_SECRET
-};
-
-// const secret = require('../secrets.json');
+const secret = process.env.NODE_ENV === 'LOCAL' ?
+  require('../secrets.json') : {
+    consumer_key: process.env.TWITTER_CONSUMER_KEY,
+    consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+    access_token_key: process.env.TWITTER_ACCESS_KEY,
+    access_token_secret: process.env.TWITTER_ACCESS_SECRET
+  };
 
 // create a redius client
-const client = redis.createClient(process.env.REDIS_URL);
-// const client = redis.createClient();
+const client = process.env.NODE_ENV === 'LOCAL' ?
+  redis.createClient() :
+  redis.createClient(process.env.REDIS_URL);
 
 // if an error occurs, print it to the console
 client.on('error', err => console.log(`Error ${err}`));
@@ -28,7 +28,6 @@ const postTweet = TwitterHelpers.buildPostTweet(Twitter);
 const buildListener = TwitterHelpers.buildBuildListener(Twitter);
 
 let goodWords = [];
-let uglyWords = [];
 client.smembers('beautiful-words', (err, words) => {
   if (err) {
     console.log(err);
@@ -47,8 +46,6 @@ client.smembers('ugly-words', (err, words) => {
     return;
   }
   words.forEach(word => classifier.learn(word, 'negative'));
-  uglyWords = words;
-  buildBot();
 });
 
 function buildBot() {
@@ -83,7 +80,7 @@ function buildBot() {
     // check the word against the baysian classifier
     const classifierResponse = classifier.categorize(theWord);
     if (classifierResponse === 'positive') {
-      postTweet(`Your right @${userName} ! ${theWord} is a good word`);
+      postTweet(`You are correct @${userName} ! ${theWord} is a good word`);
       return;
     }
     // if it fails tweet
@@ -91,6 +88,8 @@ function buildBot() {
 
     // either way add it to the appropriate list
     // thus allows for iterative training
+
+    // how to restart other listener with updated list of words?
 
   });
 }
