@@ -1,21 +1,26 @@
 {
-  "name": "count-down-bot",
+  "name": "GoodWordBot",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node tests.js",
-    "start": "node app.js"
+    "start": "node scripts/bot.js",
+    "build-db": "node scripts/build-db.js",
+    "post-install": "npm run build-db"
   },
-  "author": "",
+  "author": "Andrew McNutt <mcnutt.andrew@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^3.13.0",
-    "tape": "^4.6.3"
+    "eslint": "^3.19.0",
+    "eslint-config-uber-es2015": "^3.1.1"
   },
   "dependencies": {
-    "moment": "^2.17.1",
-    "node-emoji": "^1.5.0",
+    "bayes": "^0.0.6",
+    "redis": "^2.7.1",
     "twitter": "^1.7.0"
+  },
+  "repository": "git@github.com:mcnuttandrew/good-word-friend.git",
+  "engines": {
+    "node": "7.10.0"
   }
 }
